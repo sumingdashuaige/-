@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 //我方英雄角色
 public class HeroCharacter extends Character {
+
     public ArrayList<String> skillList;//技能列表
 
     //构造方法

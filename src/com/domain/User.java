@@ -7,6 +7,7 @@ public class User {
     private String username;//用户名唯一；长度必须在3～16位；只能由字母、数字组成，不能是纯数字
     private String password;//长度3～8位；只能是字母加数字的组合，不能有其他字母
     private boolean status;//false:未激活 true:已激活
+    private String phone;//手机号唯一；长度必须为11位；只能是数字，1开头，不能有其他字符
 
     public User() {
         id = createID();//调用方法设置id
@@ -57,8 +58,12 @@ public class User {
     public boolean isStatus() {
         return status;
     }
+
     public void setStatus(boolean status) {
         this.status = status;
     }
 
+    public String getPhone() {return phone;}
+
+    public void setPhone(String phone) {this.phone = phone;}
 }

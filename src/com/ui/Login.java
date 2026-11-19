@@ -18,7 +18,7 @@ public class Login {
             System.out.println("===================== ");
             System.out.println(" 欢迎来到文字格斗游戏 ");
             System.out.println("===================== ");
-            System.out.println("请选择操作：1登录 2注册 3退出");
+            System.out.println("请选择操作：1登录 2注册 3忘记密码");
 
             Scanner sc = new Scanner(System.in);
             String choose = sc.next();
@@ -26,8 +26,8 @@ public class Login {
             switch (choose){
                 case"1":login(list);break;
                 case"2":register(list);break;
-                case"3":{System.out.println("选择了退出");
-                    System.exit(0);
+                case"3":{System.out.println("选择了忘记密码");
+                    forgetPassword(list);break;
                 }
                 default:System.out.println("输入错误，请重新输入");break;
             }
@@ -116,7 +116,10 @@ public class Login {
 
         //1创建用户对象
         User u = new User();
+
+
         //2键盘录入用户信息、校验、u.setUsername()
+        //用户名
         while (true) {
             Scanner sc = new Scanner(System.in);
             System.out.println("请输入用户名：");
@@ -143,7 +146,36 @@ public class Login {
             break;
         }
 
+        //手机号
+        while (true) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("请输入手机号：");
+            String phone = sc.next();
+            //手机号纯数字
+            if (!checkPhone(phone)) {
+                System.out.println("手机号格式错误，只能是数字");
+                continue;
+            }
+            //11位数字
+            if (!checkLen(11, 11, phone)) {
+                System.out.println("手机号格式错误，长度必须为11位");
+                continue;
+            }
+            //手机号以1开头
+            if(!phone.startsWith("1")){
+                System.out.println("手机号格式错误，必须以1开头");
+                continue;
+            }
+            //手机号唯一
+            if (contains2(list,phone)){
+                System.out.println("手机号已存在");
+                continue;
+            }
+            u.setPhone(phone);
+            break;
+        }
 
+        //密码
         while (true) {
             //3键盘录入密码、校验、u.setPassword()
             Scanner sc = new Scanner(System.in);
@@ -178,6 +210,62 @@ public class Login {
         System.out.println("注册成功");
     }
 
+
+    public void forgetPassword(ArrayList<User> list){
+        //1输入用户名，查询用户是否存在
+        //2如果不存在，提示当前用户名未注册、结束方法
+        //3如果存在，输入手机号，并验证手机号是否正确
+        //手机号正确，输入新密码、修改密码、提示修改成功
+        while (true) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("请输入用户名：");
+            String username = sc.next();
+            int index = findIndex(list, username);
+            if (index == -1) {
+                System.out.println("当前用户名未注册");
+                return;
+            }
+            System.out.println("请输入手机号：");
+            String phone = sc.next();
+            if (!list.get(index).getPhone().equals(phone)) {
+                System.out.println("手机号错误");
+                continue;
+            }
+            System.out.println("验证成功");
+            while (true) {
+                //3键盘录入密码、校验、u.setPassword()
+                /*Scanner sc = new Scanner(System.in);
+                System.out.println("请输入密码：");*/
+                System.out.println("请输入新密码：");
+                String password1 = sc.next();
+                System.out.println("请再次输入密码：");
+                String password2 = sc.next();
+                //长度3～8位
+                if (!checkLen(3, 8, password1)) {
+                    System.out.println("密码长度必须在3～8位");
+                    continue;
+                }
+                // 只能是字母加数字的组合，不能有其他字母
+                if (!checkPassword(password1)) {
+                    System.out.println("密码只能是字母加数字的组合，不能有其他字母");
+                    continue;
+                }
+                //密码确认
+                if (!password1.equals(password2)) {
+                    System.out.println("两次密码不一致");
+                    continue;
+                }
+                list.get(index).setPassword(password1);
+                System.out.println("密码修改成功");
+                break;
+
+            }
+            break;
+
+        }
+
+    }
+
     //在集合中找username所在的索引
     public int findIndex(ArrayList<User> list,String username){
         for (int i = 0; i < list.size(); i++) {
@@ -199,6 +287,17 @@ public class Login {
                 }
                 return false;
             }
+
+    //判断手机号是否唯一
+    public boolean contains2(ArrayList<User> list, String phone) {
+        for (int i = 0; i < list.size(); i++) {
+            User u = list.get(i);
+            if (u.getPhone().equals(phone)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 
@@ -230,6 +329,13 @@ public class Login {
         int[] arr = getInfo(username);
         return arr[0]>=1 && arr[1]>=0 && arr[2]==0;
     }
+
+    public boolean checkPhone(String phone){
+        //手机号纯数字
+        int[] arr = getInfo(phone);
+        return arr[0]==0 && arr[1]==phone.length() && arr[2]==0;
+    }
+
 
     //只能由字母、数字组成，不能是纯数字
     //字母至少有一个

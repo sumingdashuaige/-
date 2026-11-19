@@ -9,9 +9,7 @@ public class Character {
 
 
     //构造方法
-    public Character(){
-
-    }
+    public Character(){}
 
     public Character(String name,int Hp,int atk,int def){
         this.name = name;
