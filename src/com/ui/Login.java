@@ -117,6 +117,7 @@ public class Login {
         //1创建用户对象
         User u = new User();
 
+
         //2键盘录入用户信息、校验、u.setUsername()
         //用户名
         while (true) {

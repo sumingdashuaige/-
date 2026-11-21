@@ -35,11 +35,6 @@ public class FightingGame {
         enemyList.add(new EnemyCharacter("重装坦克",120,10,20,"防御姿态"));
         enemyList.add(new EnemyCharacter("神秘法师",70,25,8,"火球术"));
 
-    //练习：创建敌人嘲讽话术（集合或数组）
-        ArrayList<String> enemyMock = new ArrayList<>();
-        enemyMock.add("真弱啊！");
-        enemyMock.add("能坚持到这里，已经很不错了！");
-        enemyMock.add("杂鱼~杂鱼~这就不行了吗");
 
     //5准备战斗
         int count = 1;//正在跟第几个敌人战斗
@@ -76,6 +71,7 @@ public class FightingGame {
             //回合制（你打我一下，我打你一下）
             //内循环：跟单个敌人进行多轮战斗，直到有一方的血量为0才会结束
             int round = 1;//记录跟单个敌人战斗的回合数
+            //内循环：跟单个敌人进行多轮战斗
             while (player.isAlive()){
                 //显示双方的状态
                 System.out.println("==============================");
@@ -108,8 +104,6 @@ public class FightingGame {
                 if(!player.isAlive()){
                     //游戏结束
                     System.out.println("💀游戏结束，你被 " + enemy.name + " 击败了！");
-                    //随机打印敌人嘲讽话术
-                    System.out.println(enemyMock.get(r.nextInt(enemyMock.size())));
                     break;
                 }
                 //如果玩家hp不为0，回合数+1，继续下一个回合round++;
