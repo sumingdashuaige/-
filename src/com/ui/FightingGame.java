@@ -43,7 +43,7 @@ public class FightingGame {
     //玩家一次跟多个敌人战斗，直到生命为0，游戏结束
         //外循环：跟多个敌人战斗
         while (player.isAlive()){
-            //5.1重置敌人属性，敌人属性每场HP+10，ATK+3，DEF+2（敌人：越来越打）（第二场的时候开始增加）
+            //5.1重置敌人属性，敌人属性每场HP+10，ATK+3，DEF+2（敌人越来越难打）（第二场的时候开始增加）
             if(wins != 0){
                 //获取每个敌人信息
                 for (int i = 0; i < enemyList.size(); i++) {
@@ -117,8 +117,11 @@ public class FightingGame {
                 //恢复玩家血量
                 int recover = r.nextInt(21) + 20;
                 player.heal(recover);
-                //战斗结束!你回复了 点生命值！
-                System.out.println("💚战斗结束!你回复了" + recover + "点生命值！");
+                //恢复玩家Mp：maxMp的30%
+                int recoverMp = (int)(player.maxMp * 0.3);
+                player.heal2(recoverMp);
+                //战斗结束!你回复了 点生命值！回复了 点Mp！
+                System.out.println("💚战斗结束!你回复了" + recover + "点生命值！回复了" + recoverMp + "点Mp！");
                 //当前胜场
                 System.out.println("🏆当前胜场：" + wins);
                 System.out.println("============================================================");
@@ -212,22 +215,22 @@ public class FightingGame {
                 break;
             case "2":
                 //System.out.println("2.强力一击");
-                if (player.Hp > 10){
-                    //消耗10点生命值
-                    player.takeDamage(10);
+                if (player.Mp > 10){
+                    //消耗10点Mp
+                    player.takeMp(10);
                     int damage2 = calculateDamage((int) (player.atk * 1.8), enemy.def);
-                    System.out.println("💥你消耗了10点生命值，对" + enemy.name + "使用了强力一击，造成" + damage2 + "点伤害！");
+                    System.out.println("💥你消耗了10点Mp，对" + enemy.name + "使用了强力一击，造成" + damage2 + "点伤害！");
                     //敌人受到伤害
                     enemy.takeDamage(damage2);
                 }else {
-                    System.out.println("你没有足够的生命值，使用强力一击失败！");
+                    System.out.println("你没有足够的Mp，使用强力一击失败！");
                 }
                 break;
             case "3":
                 //System.out.println("3.生命汲取");
-                if (player.Hp > 10){
-                    //消耗10点生命值
-                    player.takeDamage(10);
+                if (player.Mp > 10){
+                    //消耗10点Mp
+                    player.takeMp(10);
                     //计算恢复的血量
                     Random r = new Random();
                     int recover = r.nextInt(51) + 20;
@@ -236,7 +239,7 @@ public class FightingGame {
                     //提示：消耗10HP，你使用了生命汲取，恢复了recover点生命值！
                     System.out.println("消耗10HP，你使用了生命汲取，恢复了" + recover + "点生命值！");
                 }else {
-                    System.out.println("你没有足够的生命值，使用生命汲取失败！");
+                    System.out.println("你没有足够的Mp，使用生命汲取失败！");
                 }
                 break;
 
@@ -373,7 +376,8 @@ public class FightingGame {
         HeroCharacter player = new HeroCharacter(userName,
                 100+values[0]*10,
                 10+values[1]*2,
-                0+values[2]*1
+                0+values[2]*1,
+                100
         );
 
         //添加玩家技能

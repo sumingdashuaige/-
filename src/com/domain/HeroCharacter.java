@@ -5,6 +5,8 @@ import java.util.ArrayList;
 //我方英雄角色
 public class HeroCharacter extends Character {
 
+    public int Mp;//蓝条
+    public int maxMp;//最大蓝条
     public ArrayList<String> skillList;//技能列表
 
     //构造方法
@@ -13,10 +15,27 @@ public class HeroCharacter extends Character {
         skillList = new ArrayList<>();
     }
 
-    public HeroCharacter(String name,int Hp,int atk,int def) {
+    public HeroCharacter(String name,int Hp,int atk,int def,int Mp) {
         super(name, Hp, atk, def);
+        this.maxMp = Mp;
+        this.Mp = Mp;
         skillList = new ArrayList<>();
     }
+
+    public void heal2(int amount){
+        Mp += amount;
+        if (Mp > maxMp){
+            Mp = maxMp;
+        }
+    }
+
+    public void takeMp(int damage2){
+        Mp -= damage2;
+        if (Mp < 0){
+            Mp = 0;
+        }
+    }
+
 
     //行为：用来遍历技能列表
     public String showSkill(){
@@ -29,5 +48,12 @@ public class HeroCharacter extends Character {
         }
         return sb.toString();
     }
+
+    @Override
+    public String show()
+    {
+        return name + " " + "【当前生命：" + Hp + " 攻击：" + atk + " 防御：" + def + " 蓝条：" + Mp + " 】";
+    }
+
 
 }
