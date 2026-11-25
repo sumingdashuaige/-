@@ -1,5 +1,6 @@
 package com.ui;
 
+import com.domain.Consumable;
 import com.domain.EnemyCharacter;
 import com.domain.HeroCharacter;
 
@@ -122,6 +123,15 @@ public class FightingGame {
                 player.heal2(recoverMp);
                 //战斗结束!你回复了 点生命值！回复了 点Mp！
                 System.out.println("💚战斗结束!你回复了" + recover + "点生命值！回复了" + recoverMp + "点Mp！");
+                //30%概率获取道具
+                if(r.nextInt(100) < 30){//成功获取
+                    // 1. 随机获取一个道具
+                    Consumable dropItem = getRandomItem();
+                    // 2. 放入背包
+                    player.addConsumable(dropItem);
+                    // 3. 打印道具信息
+                    System.out.println("恭喜你获得了" + dropItem.show());
+                }
                 //当前胜场
                 System.out.println("🏆当前胜场：" + wins);
                 System.out.println("============================================================");
@@ -191,58 +201,99 @@ public class FightingGame {
     }
 
     //玩家回合：
-    //选择行动（1普通攻击／2强力一击／3生命汲取）
+    //选择行动（1普通攻击／2强力一击／3生命汲取／4使用道具）
     public void playerTurn(HeroCharacter player,EnemyCharacter enemy){
-        System.out.println("====你的回合====");
-        System.out.println("1.普通攻击");
-        System.out.println("2.强力一击");
-        System.out.println("3.生命汲取");
-        System.out.println("请选择您的行动（1-3）：");
-        Scanner sc = new Scanner(System.in);
-        String choose = sc.next();
-        //判断用户输入是否有效
-        switch (choose){
-            default:
-                System.out.println("异常操作，默认普通攻击");
-            case "1":
-                //System.out.println("1.普通攻击");
-                //伤害=我方攻击力-对方防御力
-                int damage1 = calculateDamage(player.atk,enemy.def);
-                //⚔️你对敏捷刺客使用了普通攻击，造成31点伤害！
-                System.out.println("⚔️你对" + enemy.name + "使用了普通攻击，造成" + damage1 + "点伤害！");
-                //敌人受到伤害
-                enemy.takeDamage(damage1);
-                break;
-            case "2":
-                //System.out.println("2.强力一击");
-                if (player.Mp > 10){
-                    //消耗10点Mp
-                    player.takeMp(10);
-                    int damage2 = calculateDamage((int) (player.atk * 1.8), enemy.def);
-                    System.out.println("💥你消耗了10点Mp，对" + enemy.name + "使用了强力一击，造成" + damage2 + "点伤害！");
-                    //敌人受到伤害
-                    enemy.takeDamage(damage2);
-                }else {
-                    System.out.println("你没有足够的Mp，使用强力一击失败！");
-                }
-                break;
-            case "3":
-                //System.out.println("3.生命汲取");
-                if (player.Mp > 10){
-                    //消耗10点Mp
-                    player.takeMp(10);
-                    //计算恢复的血量
-                    Random r = new Random();
-                    int recover = r.nextInt(51) + 20;
-                    //恢复生命量
-                    player.heal(recover);
-                    //提示：消耗10HP，你使用了生命汲取，恢复了recover点生命值！
-                    System.out.println("消耗10HP，你使用了生命汲取，恢复了" + recover + "点生命值！");
-                }else {
-                    System.out.println("你没有足够的Mp，使用生命汲取失败！");
-                }
-                break;
 
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("====你的回合====");
+            System.out.println("1.普通攻击");
+            System.out.println("2.强力一击");
+            System.out.println("3.生命汲取");
+            System.out.println("4.使用道具");
+            System.out.println("请选择您的行动（1-4）：");
+
+            String choose = sc.next();
+            //判断用户输入是否有效
+            switch (choose){
+                default:
+                    System.out.println("异常操作");
+                    continue;
+                case "1":
+                    //System.out.println("1.普通攻击");
+                    //伤害=我方攻击力-对方防御力
+                    int damage1 = calculateDamage(player.atk,enemy.def);
+                    //⚔️你对敏捷刺客使用了普通攻击，造成31点伤害！
+                    System.out.println("⚔️你对" + enemy.name + "使用了普通攻击，造成" + damage1 + "点伤害！");
+                    //敌人受到伤害
+                    enemy.takeDamage(damage1);
+                    return;
+                case "2":
+                    //System.out.println("2.强力一击");
+                    if (player.Mp > 10){
+                        //消耗10点Mp
+                        player.takeMp(10);
+                        int damage2 = calculateDamage((int) (player.atk * 1.8), enemy.def);
+                        System.out.println("💥你消耗了10点Mp，对" + enemy.name + "使用了强力一击，造成" + damage2 + "点伤害！");
+                        //敌人受到伤害
+                        enemy.takeDamage(damage2);
+                        return;
+                    }else {
+                        System.out.println("你没有足够的Mp，使用强力一击失败！");
+                        break;
+                    }
+
+                case "3":
+                    //System.out.println("3.生命汲取");
+                    if (player.Mp > 10){
+                        //消耗10点Mp
+                        player.takeMp(10);
+                        //计算恢复的血量
+                        Random r = new Random();
+                        int recover = r.nextInt(51) + 20;
+                        //恢复生命量
+                        player.heal(recover);
+                        //提示：消耗10HP，你使用了生命汲取，恢复了recover点生命值！
+                        System.out.println("消耗10HP，你使用了生命汲取，恢复了" + recover + "点生命值！");
+                        return;
+                    }else {
+                        System.out.println("你没有足够的Mp，使用生命汲取失败！");
+                        break;
+                    }
+
+                case "4":
+                    //System.out.println("4.使用道具");
+
+                    if (player.packageList.isEmpty()){
+                        System.out.println("背包为空，无法使用道具！");
+                        break;
+                    }
+
+                    System.out.println("你当前有：" + player.showPackage());
+                    System.out.println("请输入要使用的道具编号（输入0取消）：");
+                    if (!sc.hasNextInt()) {
+                        System.out.println("请输入数字！");
+                        sc.next();
+                        break;
+                    }
+                    int input = sc.nextInt();//玩家输入
+                    if (input == 0){
+                        System.out.println("已取消使用道具");
+                        break;
+                    }
+
+                    int itemIndex = input - 1;
+                    Consumable used = player.useConsumable(itemIndex);  // 先取出来
+
+                    if (used != null){
+                        System.out.println("💚你使用了" + used.show());
+                    }else {
+                        System.out.println("道具编号无效，使用失败！");
+                    }
+                    break;
+
+            }
         }
     }
 
@@ -386,6 +437,21 @@ public class FightingGame {
         player.skillList.add("生命汲取");
 
         return player;
+    }
+
+    // 准备道具库：根据 4.1 表格随机生成一个道具
+    public Consumable getRandomItem() {
+        Random r = new Random();
+        int index = r.nextInt(5); // 生成 0~4 的随机数
+
+        switch (index) {
+            case 0: return new Consumable("桃子", 50);
+            case 1: return new Consumable("煎蛋", 60);
+            case 2: return new Consumable("花酿鸡", 70);
+            case 3: return new Consumable("黑背鲈鱼", 80);
+            case 4: return new Consumable("白玉汤", 100);
+            default: return new Consumable("桃子", 50);
+        }
     }
 
 }
